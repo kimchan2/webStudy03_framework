@@ -1,0 +1,69 @@
+<!-- 사칙연산에 필요한 데이터를 입력받기 위한 UI -->
+
+<form id = "calForm" name = "calForm" action = "../01/calculate.do" onreset="alert('2');" method="get">
+	<input type = "text" name ="name"/><br/>
+	전송데이터 : 
+	<input type = "number" name ="leftOp" required/>
+	<select name = "operator">
+		<option value="PLUS">+</option>
+		<option value="MINUS">-</option>
+		<option value="MULTIPLY">*</option>
+		<option value="DIVIDE">/</option>
+	</select>
+	<input type = "number" name ="rightOp" required/>
+	<input type="submit" value="전송"/>
+	<input type="reset" value="취소" onclick="alert('1');"/>
+	<input type="button" value="걍버튼"/>
+</form>
+<form id="testForm" action="test.do">
+	<input type="text" name = "text"/>
+	<input type="submit" value = "전송"/>
+</form>
+
+<div id="resultArea">
+
+</div>
+<script type="text/javascript">
+	var resultArea = $("#resultArea")
+	$("#calForm").on("submit", function(event) {
+		event.preventDefault();
+		
+		let inputs = $(this).find(":input");
+		let url = this.action?this.action:"";
+		let data = {};
+		let method = this.method?this.method:"get";
+		let dataType = "json";
+		inputs.each(function(index, tag) {
+			let name = tag.name
+			if(name){
+				let value = tag.value
+				data[name] = value;
+			}
+		})
+		$.ajax({
+			url : url,
+			data : data,
+			method : method,
+			dataType : dataType, // 1. html, text, json, xml
+			success : function(resp) {
+				
+				if(dataType == "json"){
+					resultArea.html(resp.expression); // json
+				}else if(dataType == "xml"){
+					let data = $(resp).find("expression");  // xml 
+					resultArea.html(data.html());
+					console.log(data.html());
+				}else {
+					resultArea.html(resp); // html, text
+				}
+				
+			},
+			error : function(errorResp) {
+				console.log(errorResp);
+			}
+		});
+		
+		
+	});
+
+</script>

@@ -23,6 +23,7 @@ import org.apache.commons.lang3.Validate;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.member.service.IMemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.validate.CommonValidator;
 import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/registMember.do")
@@ -52,7 +53,8 @@ public class MemberRegistController extends HttpServlet {
 //		2. 검증(DB 스키마 구조 참고)
 		Map<String, StringBuffer> errors = new LinkedHashMap<>();
 		req.setAttribute("errors", errors);
-		boolean valid = Validate(member, errors);
+		CommonValidator<MemberVO> validator = new CommonValidator<>();
+		boolean valid = validator.validate(member, errors);
 		
 		String goPage = null;
 		boolean redirect = false;
@@ -91,55 +93,5 @@ public class MemberRegistController extends HttpServlet {
 			req.getRequestDispatcher(goPage).forward(req, resp);
 		}
 		
-	}
-
-	private boolean Validate(MemberVO member, Map<String, StringBuffer> errors) {
-		// 타입, 필수여부, 길이, 형식 ....
-		boolean valid = true;
-		if (StringUtils.isBlank(member.getMem_id())) {
-			valid = false;
-			errors.put("mem_id", new StringBuffer("아이디 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_pass())) {
-			valid = false;
-			errors.put("mem_pass", new StringBuffer("비밀번호 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_name())) {
-			valid = false;
-			errors.put("mem_name", new StringBuffer("회원명 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_regno1())) {
-			valid = false;
-			errors.put("mem_regno1", new StringBuffer("주민번호1 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_regno2())) {
-			valid = false;
-			errors.put("mem_regno2", new StringBuffer("주민번호2 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_zip())) {
-			valid = false;
-			errors.put("mem_zip", new StringBuffer("우편번호 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_add1())) {
-			valid = false;
-			errors.put("mem_add1", new StringBuffer("주소1 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_add2())) {
-			valid = false;
-			errors.put("mem_add2", new StringBuffer("주소2 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_hometel())) {
-			valid = false;
-			errors.put("mem_hometel", new StringBuffer("집전화번호 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_comtel())) {
-			valid = false;
-			errors.put("mem_comtel", new StringBuffer("회사전화번호 필수데이터 누락"));
-		}
-		if (StringUtils.isBlank(member.getMem_mail())) {
-			valid = false;
-			errors.put("mem_mail", new StringBuffer("메일 필수데이터 누락"));
-		}
-		return valid;
 	}
 }

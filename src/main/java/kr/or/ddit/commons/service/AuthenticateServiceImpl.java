@@ -2,13 +2,13 @@ package kr.or.ddit.commons.service;
 
 import java.util.Objects;
 
-import kr.or.ddit.commons.dao.AuthenticateDAOImpl;
-import kr.or.ddit.commons.dao.IAuthenticateDAO;
 import kr.or.ddit.enumpkg.ServiceResult;
+import kr.or.ddit.member.dao.IMemberDAO;
+import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.vo.MemberVO;
 
 public class AuthenticateServiceImpl implements IAuthenticateService{
-	private IAuthenticateDAO iad = AuthenticateDAOImpl.getInstance();
+	private IMemberDAO dao = MemberDAOImpl.getInstance();
 	
 	private static AuthenticateServiceImpl self;
 	
@@ -25,7 +25,7 @@ public class AuthenticateServiceImpl implements IAuthenticateService{
 
 	@Override
 	public Object authenticate(MemberVO member) {
-		MemberVO savedMember = iad.selectMember(member);
+		MemberVO savedMember = dao.selectMember(member.getMem_id());
 		Object result = null;
 		if(savedMember==null) {
 			result = ServiceResult.NOTEXIST;

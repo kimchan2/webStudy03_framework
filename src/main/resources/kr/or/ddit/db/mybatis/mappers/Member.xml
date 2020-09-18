@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.member.dao.IMemberDAO">
+	<insert id="insertMember" parameterType="MemberVO">
+		INSERT INTO member (                                                 
+			    mem_id, mem_pass, mem_name, mem_regno1, mem_regno2, mem_bir, 
+			    mem_zip, mem_add1, mem_add2, mem_hometel, mem_comtel, mem_hp,
+			    mem_mail, mem_job, mem_like, mem_memorial, mem_memorialday,  
+			    mem_mileage, mem_delete                                      
+			) VALUES (
+				#{mem_id}, #{mem_pass}, #{mem_name}, #{mem_regno1}, #{mem_regno2}, TO_DATE(#{mem_bir, jdbcType=DATE}, 'YYYY-MM-DD'), 
+			    #{mem_zip}, #{mem_add1}, #{mem_add2}, #{mem_hometel}, #{mem_comtel}, #{mem_hp, jdbcType=VARCHAR},
+			    #{mem_mail}, #{mem_job, jdbcType=VARCHAR}, #{mem_like, jdbcType=VARCHAR}, #{mem_memorial, jdbcType=VARCHAR}, TO_DATE(#{mem_memorialday, jdbcType=DATE}, 'YYYY-MM-DD'),  
+			    #{mem_mileage, jdbcType=NUMERIC}, #{mem_delete, jdbcType=VARCHAR}
+			)                             
+	</insert>
+	
+	<select id="selectMemberList" resultType="MemberVO">
+		SELECT *
+		FROM member
+	</select>
+	
+	<select id="selectMember" parameterType="String" resultType="MemberVO">
+		SELECT mem_id, mem_pass, mem_name,                           	
+	    	mem_regno1, mem_regno2, TO_CHAR(mem_bir, 'YYYY-MM-DD') mem_bir, 
+	    	mem_zip, mem_add1, mem_add2, mem_hometel,                        	
+	    	mem_comtel, mem_hp, mem_mail, mem_job,                            	
+	    	mem_like, mem_memorial,                       	
+	    	TO_CHAR(mem_memorialday, 'YYYY-MM-DD') mem_memorialday,
+	    	mem_mileage,                        	
+	    	mem_delete 
+		FROM member 
+		WHERE MEM_ID = #{mem_id}
+	</select>
+	
+	<update id="updateMember" parameterType="MemberVO">
+		UPDATE member SET mem_pass = #{mem_pass},                           	
+	    	mem_zip = #{mem_zip}, mem_add1 = #{mem_add1}, mem_add2 = #{mem_add2}, mem_hometel = #{mem_hometel},                        	
+	    	mem_comtel = #{mem_comtel}, mem_hp = #{mem_hp, jdbcType=VARCHAR}, mem_mail = #{mem_mail}, mem_job = #{mem_job, jdbcType=VARCHAR},                            	
+	    	mem_like = #{mem_like, jdbcType=VARCHAR}, mem_memorial = #{mem_memorial, jdbcType=VARCHAR},                       	
+	    	mem_memorialday = TO_DATE(#{mem_memorialday, jdbcType=DATE}, 'YYYY-MM-DD')
+		WHERE mem_id = #{mem_id}
+	</update>
+	
+	<update id="deleteMember" parameterType="String">
+		UPDATE member SET mem_delete = 'Y'
+		WHERE mem_id = #{mem_id}
+	</update>
+</mapper>

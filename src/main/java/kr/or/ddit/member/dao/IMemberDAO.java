@@ -3,6 +3,7 @@ package kr.or.ddit.member.dao;
 import java.util.List;
 
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ZiptbVO;
 
 /**
  * 회원관리 Persistence Layer
@@ -43,4 +44,5 @@ public interface IMemberDAO {
 	 * @return 성공(>0), 실패(==0)
 	 */
 	public int deleteMember(String mem_id);
+
 }

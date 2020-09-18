@@ -6,6 +6,7 @@ import kr.or.ddit.commons.service.IAuthenticateService;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.exception.CustomException;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ZiptbVO;
 
 /**
  * 회원관리 Business Logic Layer
@@ -45,5 +46,4 @@ public interface IMemberService {
 	 * @return 존재하지 않는 경우, {@link CustomException} 발생, INVALIDPASSWORD, OK, FAILED
 	 */
 	public ServiceResult removeMember(MemberVO member);
-	
 }

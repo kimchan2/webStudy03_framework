@@ -20,6 +20,9 @@ import org.junit.Test;
 
 import kr.or.ddit.member.dao.IMemberDAO;
 import kr.or.ddit.member.dao.MemberDAOImpl;
+import kr.or.ddit.validate.DeleteGroup;
+import kr.or.ddit.validate.InsertGroup;
+import kr.or.ddit.validate.UpdateGroup;
 
 public class MemberVOValidationTest {
 	private IMemberDAO dao;
@@ -40,7 +43,6 @@ public class MemberVOValidationTest {
 	@Before
 	public void setUp() throws Exception {
 		dao = MemberDAOImpl.getInstance();
-		System.out.println("before");
 	}
 	
 //	@Test
@@ -53,10 +55,10 @@ public class MemberVOValidationTest {
 	@Test
 	public void memberValidationTest() {
 		MemberVO member = MemberVO.builder()
-				.mem_id("원쭁찬")
-				.mem_pass("a")
+				.mem_hp("qwdqwdqwdw")
 				.build();
-		Set<ConstraintViolation<MemberVO>> errorSet = validator.validate(member);
+		Set<ConstraintViolation<MemberVO>> errorSet = 
+				validator.validate(member, InsertGroup.class);
 		System.out.println(errorSet.size());
 		for(ConstraintViolation<MemberVO> violation : errorSet) {
 			Path propertyPath = violation.getPropertyPath();

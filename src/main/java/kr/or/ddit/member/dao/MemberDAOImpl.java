@@ -4,13 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+
 import kr.or.ddit.db.ConnectionFactory;
+import kr.or.ddit.db.CustomSqlSessionFactoryBuilder;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.ZiptbVO;
 
 public class MemberDAOImpl implements IMemberDAO{
 	private static MemberDAOImpl self;
+	private SqlSessionFactory sqlSessionFactory = CustomSqlSessionFactoryBuilder.getSqlSessionFactory();
 	
 	private MemberDAOImpl() {
 		super();
@@ -24,7 +31,14 @@ public class MemberDAOImpl implements IMemberDAO{
 	
 	@Override
 	public int insertMember(MemberVO member) {
-		// TODO Auto-generated method stub
+		try(
+			SqlSession sqlSession = sqlSessionFactory.openSession(true);
+		){
+			IMemberDAO mapper = sqlSession.getMapper(IMemberDAO.class);
+			return mapper.insertMember(member);
+//			return sqlSession.insert("kr.or.ddit.member.dao.IMemberDAO.insertMember", member);
+		}
+		/*// TODO Auto-generated method stub
 		StringBuffer sql = new StringBuffer();
 		sql.append("INSERT INTO member (                                                 ");
 		sql.append("	    mem_id, mem_pass, mem_name, mem_regno1, mem_regno2, mem_bir, ");
@@ -64,18 +78,30 @@ public class MemberDAOImpl implements IMemberDAO{
 			return pstmt.executeUpdate();
 		}catch (Exception e) {
 			throw new RuntimeException(e);
-		}
+		}*/
 	}
 
 	@Override
 	public List<MemberVO> selectMemberList() {
-		// TODO Auto-generated method stub
-		return null;
+		try(
+			SqlSession sqlSession = sqlSessionFactory.openSession();
+		){
+			IMemberDAO mapper = sqlSession.getMapper(IMemberDAO.class);
+			return mapper.selectMemberList();
+		}
 	}
 
 	@Override
 	public MemberVO selectMember(String mem_id) {
-		StringBuffer sql = new StringBuffer();
+		try(
+			SqlSession sqlSession = sqlSessionFactory.openSession();
+		){
+			IMemberDAO mapper = sqlSession.getMapper(IMemberDAO.class);
+			return mapper.selectMember(mem_id);
+//			return sqlSession.selectOne("kr.or.ddit.member.dao.IMemberDAO.selectMember", mem_id);
+		}
+
+		/*StringBuffer sql = new StringBuffer();
 		sql.append("SELECT									");
 	    sql.append("mem_id,                             	");
 	    sql.append("mem_pass,                           	");
@@ -132,19 +158,27 @@ public class MemberDAOImpl implements IMemberDAO{
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new RuntimeException(e); // 호출자에게 제어권한을 넘김
-		}
+		}*/
 	}
 
 	@Override
 	public int updateMember(MemberVO member) {
-		// TODO Auto-generated method stub
-		return 0;
+		try(
+			SqlSession sqlSession = sqlSessionFactory.openSession(true);
+		){
+			IMemberDAO mapper = sqlSession.getMapper(IMemberDAO.class);
+			return mapper.updateMember(member);
+		}
 	}
 
 	@Override
 	public int deleteMember(String mem_id) {
-		// TODO Auto-generated method stub
-		return 0;
+		try(
+			SqlSession sqlSession = sqlSessionFactory.openSession(true);
+		){
+			IMemberDAO mapper = sqlSession.getMapper(IMemberDAO.class);
+			return mapper.deleteMember(mem_id);
+		}
 	}
-
+	
 }

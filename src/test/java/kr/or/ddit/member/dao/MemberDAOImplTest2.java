@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 
 public class MemberDAOImplTest2 {
 	IMemberDAO dao;
@@ -17,6 +18,18 @@ public class MemberDAOImplTest2 {
 		dao = MemberDAOImpl.getInstance();
 	}
 
+//	@Test
+//	public void testSelectMemberCount() {
+//		PagingVO<MemberVO> pagingVO = new PagingVO<>();
+//		pagingVO.setSearchWord("xpxp9985");
+//		
+//		int result = dao.selectMemberCount(pagingVO);
+//		assertNotNull(result);
+//		
+//		List<MemberVO> memList = dao.selectMemberList(pagingVO);
+//		assertNotNull(memList);
+//	}
+	
 //	@Test
 	public void testInsertMember() {
 		MemberVO member = MemberVO.builder()
@@ -44,13 +57,13 @@ public class MemberDAOImplTest2 {
 	}
 
 //	@Test
-	public void testSelectMemberList() {
-		List<MemberVO> list = dao.selectMemberList();
-		System.out.println(list);
-		assertNotNull(list);
-	}
+//	public void testSelectMemberList() {
+//		List<MemberVO> list = dao.selectMemberList(pagingVO);
+//		System.out.println(list);
+//		assertNotNull(list);
+//	}
 
-//	@Test(timeout=2000) // 2초 이내에 실행이 완료돼야 한다는 뜻
+	@Test(timeout=2000) // 2초 이내에 실행이 완료돼야 한다는 뜻
 	public void testSelectMember() {
 		MemberVO member = dao.selectMember("a001");
 		System.out.println(member);
@@ -59,7 +72,7 @@ public class MemberDAOImplTest2 {
 		assertNull(member);
 	}
 
-	@Test
+//	@Test
 	public void testUpdateMember() {
 		MemberVO member = MemberVO.builder()
 				.mem_add1("대전")

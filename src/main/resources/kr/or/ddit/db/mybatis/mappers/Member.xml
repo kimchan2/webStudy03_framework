@@ -1,6 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.or.ddit.member.dao.IMemberDAO">
+<mapper namespace="kr.or.ddit.member.dao.IMemberDAO"> <!-- 네임 스페이스를 반드시 인터페이스의 퀄리파이드 네임으로 맞춰야 매퍼프록시 생성가능 -->
+	<sql id="searchFrag">
+		<where>
+			<if test="searchVO neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(searchVO.searchWord)">
+				<if test="searchVO.searchType == 'all'">
+					INSTR(MEM_NAME, #{searchVO.searchWord}) > 0 OR 
+					<!-- MEM_NAME LIKE '%'|| #{searchVO.searchWord, jdbcType=VARCHAR} ||'%' OR -->
+					MEM_ADD1 LIKE '%'|| #{searchVO.searchWord, jdbcType=VARCHAR} ||'%'
+				</if>
+				<if test="searchVO.searchType eq 'name'">
+					MEM_NAME LIKE '%'|| #{searchVO.searchWord, jdbcType=VARCHAR} ||'%'
+				</if>
+				<if test="searchVO.searchType == 'address'">
+					MEM_ADD1 LIKE '%'|| #{searchVO.searchWord, jdbcType=VARCHAR} ||'%'
+				</if>
+			</if>
+		</where>
+	</sql>
+	
+	<select id="selectMemberCount" parameterType="PagingVO" resultType="int">
+		SELECT COUNT(*)
+		FROM member
+		<include refid="searchFrag"></include>
+	</select>
+		
+	<select id="selectMemberList" parameterType="PagingVO" resultType="MemberVO">
+		SELECT *
+		FROM
+		(SELECT ROWNUM rn, a.*
+		FROM member a
+		<include refid="searchFrag"></include>
+		)
+		<![CDATA[
+		WHERE rn >= #{startRow} AND rn <= #{endRow}
+		]]>
+	</select>
+	
 	<insert id="insertMember" parameterType="MemberVO">
 		INSERT INTO member (                                                 
 			    mem_id, mem_pass, mem_name, mem_regno1, mem_regno2, mem_bir, 
@@ -15,22 +51,40 @@
 			)                             
 	</insert>
 	
-	<select id="selectMemberList" resultType="MemberVO">
-		SELECT *
-		FROM member
-	</select>
+	<resultMap type="MemberVO" id="memberMap" autoMapping="true">
+		<id property="mem_id" column="MEM_ID"/>
+		<!-- <result property="mem_id" column="MEM_ID"/> -->
+		<collection property="prodList" ofType="ProdVO" autoMapping="true">
+			<!-- <result property="prod_id" column="PROD_ID"/> -->
+		</collection>
+	</resultMap>
 	
-	<select id="selectMember" parameterType="String" resultType="MemberVO">
-		SELECT mem_id, mem_pass, mem_name,                           	
-	    	mem_regno1, mem_regno2, TO_CHAR(mem_bir, 'YYYY-MM-DD') mem_bir, 
-	    	mem_zip, mem_add1, mem_add2, mem_hometel,                        	
-	    	mem_comtel, mem_hp, mem_mail, mem_job,                            	
-	    	mem_like, mem_memorial,                       	
-	    	TO_CHAR(mem_memorialday, 'YYYY-MM-DD') mem_memorialday,
-	    	mem_mileage,                        	
-	    	mem_delete 
-		FROM member 
-		WHERE MEM_ID = #{mem_id}
+	<select id="selectMember" parameterType="String" resultMap="memberMap">
+<!-- 		SELECT mem_id, mem_pass, mem_name,                           	 -->
+<!-- 	    	mem_regno1, mem_regno2, TO_CHAR(mem_bir, 'YYYY-MM-DD') mem_bir,  -->
+<!-- 	    	mem_zip, mem_add1, mem_add2, mem_hometel,                        	 -->
+<!-- 	    	mem_comtel, mem_hp, mem_mail, mem_job,                            	 -->
+<!-- 	    	mem_like, mem_memorial,                       	 -->
+<!-- 	    	TO_CHAR(mem_memorialday, 'YYYY-MM-DD') mem_memorialday, -->
+<!-- 	    	mem_mileage,                        	 -->
+<!-- 	    	mem_delete  -->
+<!-- 		FROM member  -->
+<!-- 		WHERE MEM_ID = #{mem_id} -->
+		
+		WITH MEMCART AS(
+         SELECT DISTINCT mem_id, mem_pass, mem_name,                              
+             mem_regno1, mem_regno2, TO_CHAR(mem_bir, 'YYYY-MM-DD') mem_bir, 
+             mem_zip, mem_add1, mem_add2, mem_hometel,                           
+             mem_comtel, mem_hp, mem_mail, mem_job,                               
+             mem_like, mem_memorial,                          
+             TO_CHAR(mem_memorialday, 'YYYY-MM-DD') mem_memorialday,
+             mem_mileage,                           
+             mem_delete, CART_MEMBER, CART_PROD 
+         FROM MEMBER LEFT OUTER JOIN CART ON(MEM_ID = CART_MEMBER) 
+         WHERE MEM_ID = #{mem_id}
+      )
+      SELECT MEMCART.*, PROD.*
+      FROM MEMCART LEFT OUTER JOIN PROD ON (CART_PROD = PROD_ID)
 	</select>
 	
 	<update id="updateMember" parameterType="MemberVO">

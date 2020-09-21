@@ -3,6 +3,7 @@ package kr.or.ddit.member.dao;
 import java.util.List;
 
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ZiptbVO;
 
 /**
@@ -19,10 +20,18 @@ public interface IMemberDAO {
 	public int insertMember(MemberVO member);
 	
 	/**
-	 * 회원 목록 조회
+	 * 검색조건에 맞는 회원수 조회
+	 * @param member
 	 * @return
 	 */
-	public List<MemberVO> selectMemberList();
+	public int selectMemberCount(PagingVO<MemberVO> member);
+	
+	/**
+	 * 회원 목록 조회
+	 * @param pagingVO TODO
+	 * @return
+	 */
+	public List<MemberVO> selectMemberList(PagingVO<MemberVO> pagingVO);
 	
 	/**
 	 * 회원 상세 조회

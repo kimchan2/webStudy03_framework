@@ -6,6 +6,7 @@ import kr.or.ddit.commons.service.IAuthenticateService;
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.exception.CustomException;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ZiptbVO;
 
 /**
@@ -20,11 +21,13 @@ public interface IMemberService {
 	 */
 	public ServiceResult registMember(MemberVO member);
 	
+	public int retrieveMemberCount(PagingVO<MemberVO> pagingVO);
+	
 	/**
 	 * 회원 목록 조회(관리자용)
-	 * @return
+	 * @return 존재하지 않는 경우, {@link CustomException} 발생, 성공 List<MemberVO), FAILED
 	 */
-	public List<MemberVO> retrieveMemberList();
+	public Object retrieveMemberList(PagingVO<MemberVO> pagingVO);
 	
 	/**
 	 * 회원 상세 조회(관리자용)

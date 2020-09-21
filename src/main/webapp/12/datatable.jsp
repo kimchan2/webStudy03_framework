@@ -39,8 +39,6 @@
             { "data": "zipcode" },
             { "data": "address" }
         ]
-// 		page:currentPage,
-// 		pages:totalPage
 	});
 </script>
 </body>

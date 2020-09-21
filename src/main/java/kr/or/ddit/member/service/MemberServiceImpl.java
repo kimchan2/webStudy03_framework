@@ -9,6 +9,7 @@ import kr.or.ddit.exception.CustomException;
 import kr.or.ddit.member.dao.IMemberDAO;
 import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ZiptbVO;
 
 public class MemberServiceImpl implements IMemberService{
@@ -44,10 +45,27 @@ public class MemberServiceImpl implements IMemberService{
 		return result;
 	}
 
+
 	@Override
-	public List<MemberVO> retrieveMemberList() {
-		// TODO Auto-generated method stub
-		return null;
+	public int retrieveMemberCount(PagingVO<MemberVO> pagingVO) {
+		int result = memberDAO.selectMemberCount(pagingVO);
+		return result;
+	}
+	
+	@Override
+	public Object retrieveMemberList(PagingVO<MemberVO> pagingVO) {
+		Object result = memberDAO.selectMemberList(pagingVO);
+		if(result instanceof List<?>) {
+			result = (List<MemberVO>)result;
+		}else {
+			Integer cnt = retrieveMemberCount(pagingVO);
+			if(cnt == 0) {
+				result = ServiceResult.NOTEXIST;
+			}else {
+				result = ServiceResult.FAILED;
+			}
+		}
+		return result;
 	}
 
 	@Override

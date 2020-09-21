@@ -18,7 +18,7 @@ public class PagingVO<T> implements Serializable{
 
 	private int totalRecord;
 	private int currentPage;
-	private int screenSize=10;
+	private int screenSize=3;
 	private int blockSize=5;
 	
 	private int totalPage;
@@ -30,7 +30,7 @@ public class PagingVO<T> implements Serializable{
 	private int recordsTotal;
 	private int recordsFiltered;
 	
-	private String searchWord;
+	private SearchVO searchVO;
 	
 	private List<T> data;
 	
@@ -70,5 +70,32 @@ public class PagingVO<T> implements Serializable{
 		}
 		
 		return html.toString();
+	}
+	
+	private final String BSPATTERN = "<li class='page-item'><a data-page='%s' class='page-link %s' href='#'>%s</a></li>";
+	public String getPagingHTML_BS() {
+		StringBuffer bs = new StringBuffer();
+		bs.append("<nav aria-label='Page navigation example'>");
+		bs.append("<ul class='pagination'>");
+		
+		endPage = totalPage<endPage?totalPage:endPage;
+		if(startPage > blockSize) {
+			bs.append(String.format(BSPATTERN, (startPage-blockSize), "Previous", "이전"));
+		}
+		for(int page=startPage; page <= endPage; page++) {
+			if(currentPage==page) {
+				bs.append(String.format(BSPATTERN, page, "current", page));
+			}else {
+				bs.append(String.format(BSPATTERN, page, "", page));
+			}
+		}
+		if(endPage < totalPage) {
+			bs.append(String.format(BSPATTERN, (endPage+1), "Next", "다음"));
+		}
+		
+		bs.append("</ul>");
+		bs.append("</nav>");
+		
+		return bs.toString();
 	}
 }

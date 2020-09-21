@@ -21,5 +21,6 @@
 	<mappers>
 		<mapper resource="kr/or/ddit/db/mybatis/mappers/ZipCodeSearch.xml" />
 		<mapper resource="kr/or/ddit/db/mybatis/mappers/Member.xml" />
+		<mapper resource="kr/or/ddit/db/mybatis/mappers/Prod.xml" />
 	</mappers>
 </configuration>
